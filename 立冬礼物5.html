@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>神秘立冬礼物</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: #f5f5f7;
+            overflow: auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* 解锁画面优化 */
+        .unlock-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f8f9fa 0%, #eef2f7 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+
+        /* 雪花装饰元素 */
+        .snowflake {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            animation: snowfall linear infinite;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 解锁卡片容器 */
+        .unlock-card {
+            background-color: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(150, 150, 150, 0.15);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            transform: translateY(20px);
+            animation: cardRise 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes cardRise {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 标题样式优化 */
+        .unlock-title {
+            font-size: 26px;
+            color: #333;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #5a67d8, #ed64a6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .unlock-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 10%;
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, #5a67d8, #ed64a6);
+            border-radius: 3px;
+            transform: scaleX(0.8);
+            animation: lineGrow 1s ease forwards;
+        }
+
+        @keyframes lineGrow {
+            0% {
+                transform: scaleX(0.2);
+            }
+            100% {
+                transform: scaleX(0.8);
+            }
+        }
+
+        /* 副标题样式 */
+        .unlock-subtitle {
+            color: #666;
+            font-size: 16px;
+            margin: 25px 0 30px;
+            line-height: 1.6;
+            padding: 0 10px;
+        }
+
+        /* 按钮样式优化 */
+        .unlock-btn {
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 14px 45px;
+            font-size: 18px;
+            border-radius: 50px;
+            margin-top: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unlock-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .unlock-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .unlock-btn:hover::before {
+            left: 100%;
+        }
+
+        /* 小装饰元素 */
+        .decor-element {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            opacity: 0.7;
+        }
+
+        .decor-top-left {
+            top: 20px;
+            left: 20px;
+            color: #5a67d8;
+        }
+
+        .decor-bottom-right {
+            bottom: 20px;
+            right: 20px;
+            color: #ed64a6;
+        }
+
+        /* 顶部标题栏 */
+        .title-bar {
+            text-align: center;
+            margin: 30px 0 40px;
+            position: relative;
+        }
+
+        .title-bar h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* 祝福卡片样式 */
+        .blessing-card {
+            position: absolute;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            min-width: 220px;
+            max-width: 280px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.8) rotate(0deg);
+        }
+
+        .blessing-card.appear {
+            animation: cardPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes cardPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) rotate(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .blessing-card:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+            z-index: 20;
+        }
+
+        .blessing-card .card-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .blessing-card .hint {
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .blessing-card .hint .heart {
+            color: #ff4d6d;
+        }
+
+        .blessing-card .text {
+            color: #333;
+            font-size: 16px;
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .more-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            z-index: 50;
+        }
+
+        .more-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .cards-container {
+            position: relative;
+            width: 100%;
+            min-height: calc(100vh - 150px);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 解锁画面 -->
+    <div class="unlock-modal" id="unlockModal">
+        <!-- 雪花装饰（JS动态生成） -->
+        <div class="unlock-card">
+            <span class="decor-element decor-top-left">❄️</span>
+            <h2 class="unlock-title">神秘立冬礼物</h2>
+            <p class="unlock-subtitle">你有一份温暖的立冬祝福待查收，确定要打开这份惊喜吗？</p>
+            <button class="unlock-btn" id="confirmBtn">开启祝福</button>
+            <span class="decor-element decor-bottom-right">❤️</span>
+        </div>
+    </div>
+
+    <!-- 顶部标题 -->
+    <div class="title-bar">
+        <h1>神秘立冬礼物❄️</h1>
+    </div>
+
+    <!-- 祝福卡片容器 -->
+    <div class="cards-container" id="cardsContainer"></div>
+
+    <!-- 更多按钮 -->
+    <button class="more-btn" id="moreBtn">更多</button>
+
+    <!-- BGM -->
+    <audio id="bgm" loop preload="auto">
+        <source src="https://music.163.com/song/media/outer/url?id=2082019808.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // 生成雪花装饰
+        function createSnowflakes(count = 30) {
+            const modal = document.getElementById('unlockModal');
+            for (let i = 0; i < count; i++) {
+                const snow = document.createElement('div');
+                snow.className = 'snowflake';
+                snow.innerText = '❄️';
+                // 随机位置和动画
+                snow.style.left = `${Math.random() * 100}%`;
+                snow.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                snow.style.animationDelay = `${Math.random() * 5}s`;
+                snow.style.fontSize = `${Math.random() * 10 + 8}px`;
+                modal.appendChild(snow);
+            }
+        }
+
+        // 页面加载时生成雪花
+        window.addEventListener('load', () => {
+            createSnowflakes();
+        });
+
+        // 其他逻辑保持不变
+        const unlockModal = document.getElementById('unlockModal');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const cardsContainer = document.getElementById('cardsContainer');
+        const moreBtn = document.getElementById('moreBtn');
+        const bgm = document.getElementById('bgm');
+
+        // 替换为你的20条立冬祝福语
+        const blessingTexts = [
+               "天天开心，每天都有不同的小蛋糕",
+            "布丁：主人今天是立冬，记得吃饺子，天天开心",
+            "顺顺利利",
+            "天天开心",
+            "学会爱自己，才能更好地爱别人",
+            "今天过得开心嘛",
+            "珍惜每一刻",
+            "保持微笑呀",
+            "早点休息",
+            "多喝水哦~",
+            "你超棒的",
+            "期待下一次见面",
+            "我想你了",
+            "好好爱自己",
+            "我想和你做好朋友，一直的好朋友",
+            "不开心了记得找我",
+            "一切都会好起来的",
+            "别太累啦",
+            "记得吃早餐",
+            "今天也要加油呀",
+            "你值得被爱",
+            "慢慢来，不着急",
+            "每天都要开心",
+            "照顾好自己",
+            "立冬添寒意，添衣别忘记，平安暖心底～",
+            "冬来风渐凉，愿你常安康，岁岁皆顺畅！",
+            "立冬启新冬，保暖记心中，日子暖洋洋～",
+            "风裹凉意至，立冬多珍重，万事皆顺意！",
+            "立冬临，寒渐深，添衣暖，乐常伴～",
+            "冬始今日，愿你有暖衣，更有好心意～",
+            "立冬降温啦，厚衣穿起来，平安没烦恼～",
+            "寒来冬到，愿你暖汤常喝，喜乐常绕～",
+            "立冬节气至，保暖要及时，顺遂每一时～",
+            "风凉冬已立，添衣别大意，安康长相依～",
+            "立冬开启冬时光，暖护自己，事事吉祥～",
+            "冬来天渐寒，一碗热汤暖，岁岁皆平安～",
+            "立冬临，寒意生，添衣暖，万事兴～",
+            "立冬到，寒料峭，多保暖，乐逍遥～",
+            "冬始今朝，暖衣在身，顺意在心～",
+            "立冬风渐冷，添衣别等冻，平安常跟从～",
+            "寒来冬立，暖食暖胃，心意暖心～",
+            "立冬节气至，保暖是大事，日子甜滋滋～",
+            "冬来添凉意，常添厚棉衣，安康总相依～",
+            "立冬启冬序，暖护别耽误，幸福每一步～"
+         ];
+         
+        const cardColors = [
+            "#e0f7fa", "#f1f8e9", "#fff8e1", "#fce4ec", "#f3e5f5",
+            "#e8f5e9", "#fff3e0", "#e3f2fd", "#f8f9fa", "#f0f7ff"
+        ];
+
+        const usedPositions = [];
+        const usedTexts = [];
+
+        function getUniquePosition() {
+            const maxX = window.innerWidth - 300;
+            const maxY = window.innerHeight - 100;
+            const minX = 20;
+            const minY = 120;
+
+            let x = Math.floor(Math.random() * (maxX - minX)) + minX;
+            let y = Math.floor(Math.random() * (maxY - minY)) + minY;
+
+            const isOverlapping = usedPositions.some(pos => {
+                return Math.abs(x - pos.x) < 50 && Math.abs(y - pos.y) < 50;
+            });
+
+            if (isOverlapping) {
+                return getUniquePosition();
+            }
+
+            usedPositions.push({ x, y });
+            return { x, y };
+        }
+
+        function getUniqueText() {
+            if (usedTexts.length >= blessingTexts.length) {
+                usedTexts.length = 0;
+            }
+
+            const availableTexts = blessingTexts.filter(text => !usedTexts.includes(text));
+            const randomIndex = Math.floor(Math.random() * availableTexts.length);
+            const selectedText = availableTexts[randomIndex];
+            usedTexts.push(selectedText);
+            return selectedText;
+        }
+
+        function createBlessingCard(delay = 0) {
+            const card = document.createElement('div');
+            card.className = 'blessing-card';
+
+            const randomColor = cardColors[Math.floor(Math.random() * cardColors.length)];
+            card.style.backgroundColor = randomColor;
+
+            const pos = getUniquePosition();
+            card.style.left = `${pos.x}px`;
+            card.style.top = `${pos.y}px`;
+
+            const rotate = (Math.random() * 6 - 3) + 'deg';
+            card.style.transform = `scale(0.8) rotate(${rotate})`;
+
+            const text = getUniqueText();
+            card.innerHTML = `
+                <div class="card-content">
+                    <span class="hint">
+                        <span class="heart">❤️</span>提示
+                    </span>
+                    <span class="text">${text}</span>
+                </div>
+            `;
+
+            cardsContainer.appendChild(card);
+
+            setTimeout(() => {
+                card.classList.add('appear');
+            }, delay);
+        }
+
+        function generateCards(count, interval = 300) {
+            for (let i = 0; i < count; i++) {
+                createBlessingCard(i * interval);
+            }
+        }
+
+        confirmBtn.addEventListener('click', () => {
+            unlockModal.style.opacity = 0;
+            setTimeout(() => {
+                unlockModal.style.display = 'none';
+                bgm.play().catch(err => console.log('BGM播放失败:', err));
+                generateCards(10, 300);
+            }, 600);
+        });
+
+        moreBtn.addEventListener('click', () => {
+            generateCards(3, 300);
+        });
+    </script>
+</body>
+</html>
